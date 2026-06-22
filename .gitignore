@@ -1,3 +1,6 @@
+# Database
+db.sqlite3
+
 # Virtual Environment
 venv/
 env/
@@ -17,6 +20,3 @@ __pycache__/
 # OS Files
 .DS_Store
 Thumbs.db
-
-# Jupyter
-.ipynb_checkpoints/
