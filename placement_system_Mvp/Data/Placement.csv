@@ -1,0 +1,21 @@
+student_enrollment,company_id,ctc_lpa,role,month_of_offer
+MITU22BTCS0001,1,5.7,ML Engineer,October 2025
+MITU22BTCS0002,2,6.7,Software Engineer,October 2025
+MITU22BTCS0003,3,11.9,QA Engineer,November 2025
+MITU22BTCS0004,4,6.5,ML Engineer,October 2025
+MITU22BTCS0005,5,5.4,QA Engineer,November 2025
+MITU22BTCS0006,6,10.2,QA Engineer,November 2025
+MITU22BTCS0007,7,6.4,ML Engineer,November 2025
+MITU22BTCS0008,8,4.1,Data Analyst,December 2025
+MITU22BTCS0009,9,10.0,Software Engineer,November 2025
+MITU22BTCS0010,10,9.9,Backend Developer,November 2025
+MITU23BTCS0011,11,9.2,QA Engineer,September 2025
+MITU23BTCS0012,12,8.4,ML Engineer,November 2025
+MITU23BTCS0013,13,12.1,Backend Developer,December 2025
+MITU23BTCS0014,14,10.0,Backend Developer,October 2025
+MITU23BTCS0015,15,6.9,Data Analyst,November 2025
+MITU23BTCS0016,16,6.3,Data Analyst,September 2025
+MITU23BTCS0017,17,8.3,Backend Developer,October 2025
+MITU23BTCS0018,18,7.7,Data Analyst,September 2025
+MITU23BTCS0019,19,7.7,QA Engineer,September 2025
+MITU23BTCS0020,20,6.3,Software Engineer,December 2025

@@ -1,0 +1,21 @@
+id,name,city,domain,contact_email,contact_phone
+1,Infosys,Hyderabad,Cybersecurity,hr@infosys.com,02070000001
+2,TCS,Mumbai,AI,hr@tcs.com,02070000002
+3,Wipro,Hyderabad,Cloud,hr@wipro.com,02070000003
+4,Capgemini,Hyderabad,AI,hr@capgemini.com,02070000004
+5,Accenture,Mumbai,Cybersecurity,hr@accenture.com,02070000005
+6,IBM,Pune,Cloud,hr@ibm.com,02070000006
+7,Cognizant,Bengaluru,Cybersecurity,hr@cognizant.com,02070000007
+8,LTIMindtree,Chennai,Cybersecurity,hr@ltimindtree.com,02070000008
+9,Tech Mahindra,Chennai,AI,hr@techmahindra.com,02070000009
+10,Deloitte,Mumbai,Cybersecurity,hr@deloitte.com,02070000010
+11,Oracle,Hyderabad,Cloud,hr@oracle.com,02070000011
+12,Microsoft,Pune,Cybersecurity,hr@microsoft.com,02070000012
+13,Google,Hyderabad,Cybersecurity,hr@google.com,02070000013
+14,Amazon,Mumbai,Cloud,hr@amazon.com,02070000014
+15,HCL,Chennai,Analytics,hr@hcl.com,02070000015
+16,Persistent,Chennai,Software,hr@persistent.com,02070000016
+17,Cybage,Mumbai,Software,hr@cybage.com,02070000017
+18,Zensar,Hyderabad,Analytics,hr@zensar.com,02070000018
+19,Hexaware,Bengaluru,Analytics,hr@hexaware.com,02070000019
+20,Bosch,Chennai,Software,hr@bosch.com,02070000020
