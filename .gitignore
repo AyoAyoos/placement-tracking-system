@@ -17,6 +17,10 @@ __pycache__/
 # Environment Variables
 .env
 
+# Collected static files / uploaded media (persisted via Docker volumes instead)
+staticfiles/
+media/
+
 # OS Files
 .DS_Store
 Thumbs.db
