@@ -11,21 +11,34 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
+# --------------------------------------------------------------------------
+# Environment variables
+# All secrets and environment-specific values live in .env (never committed).
+# See .env.example for the full list of variables this project reads.
+# --------------------------------------------------------------------------
+env = environ.Env(
+    DEBUG=(bool, False),
+)
+environ.Env.read_env(BASE_DIR / '.env')
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-68giq!#mvqdg)#ql8p8cv1ds=)^fp7ku8p=m!di64zqt6*u)vw'
+# No fallback default here on purpose - if SECRET_KEY is missing from .env,
+# fail loudly at startup rather than silently running on a known/insecure key.
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
+
+# Required by Django when DEBUG=False and the admin is served behind a
+# reverse proxy / custom domain (e.g. https://placements.yourcollege.edu).
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
 
 
 # Application definition
@@ -42,6 +55,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # Serves collected static files directly from Gunicorn in production,
+    # without needing a separate Nginx static-file mount.
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -72,12 +88,14 @@ WSGI_APPLICATION = 'placement_system_Mvp.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+#
+# Set DATABASE_URL in .env for Postgres, e.g.:
+#   DATABASE_URL=postgres://placement_user:placement_pass@db:5432/placement_db
+# If DATABASE_URL is not set, falls back to a local SQLite file so `manage.py`
+# commands still work out of the box for quick local experimentation.
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')
 }
 
 
@@ -116,3 +134,49 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # target for `collectstatic` in production
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+# Media files (uploaded offer letters, etc.)
+# Previously undefined - Internship.offer_letter uploads had nowhere to be
+# written to and would fail. In production this should be a persistent
+# volume (see docker-compose.yml) or swapped for object storage (S3-compatible).
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# --------------------------------------------------------------------------
+# Production security hardening
+# Only enforced when DEBUG=False, so local development is unaffected.
+# See: https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
+# --------------------------------------------------------------------------
+if not DEBUG:
+    SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 30  # 30 days, raise once confident
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+
+# --------------------------------------------------------------------------
+# Logging - so admin errors and data-import problems land somewhere durable
+# instead of vanishing when a container restarts.
+# --------------------------------------------------------------------------
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {'class': 'logging.StreamHandler'},
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': env('DJANGO_LOG_LEVEL', default='INFO'),
+    },
+}
