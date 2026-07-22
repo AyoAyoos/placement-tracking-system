@@ -1,11 +1,13 @@
 from django.contrib import admin
 from .models import Company, Student, Placement, Internship
 
+
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ('name', 'city', 'domain')
     search_fields = ('name', 'domain')
     list_filter = ('city',)
+
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
@@ -13,14 +15,22 @@ class StudentAdmin(admin.ModelAdmin):
     search_fields = ('enrollment_no', 'roll_no', 'full_name', 'email')
     list_filter = ('batch', 'class_division', 'department')
 
+
 @admin.register(Placement)
 class PlacementAdmin(admin.ModelAdmin):
     list_display = ('student', 'company', 'ctc_lpa', 'role', 'month_of_offer')
     search_fields = ('student__full_name', 'student__enrollment_no', 'company__name')
     list_filter = ('company__name', 'month_of_offer')
+    autocomplete_fields = ('student', 'company')
+
 
 @admin.register(Internship)
 class InternshipAdmin(admin.ModelAdmin):
-    list_display = ('student', 'company', 'duration_months', 'mode', 'stipend_monthly', 'source')
+    list_display = ('student', 'company', 'duration_months', 'mode', 'is_paid', 'stipend_amount', 'source')
     search_fields = ('student__full_name', 'student__enrollment_no', 'company__name')
-    list_filter = ('mode', 'source', 'company__name')
+    list_filter = ('mode', 'source', 'company__name', 'is_paid')
+    autocomplete_fields = ('student', 'company')
+
+
+# autocomplete_fields above needs each referenced model's admin to define search_fields,
+# which Student and Company already do.

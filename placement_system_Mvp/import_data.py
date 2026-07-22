@@ -74,6 +74,18 @@ def import_placements():
             print(f"Company not found: {row['company_id']}")
 
 
+def _parse_stipend(raw_value):
+    """Split a CSV stipend cell ('15000' or 'Unpaid') into (is_paid, stipend_amount)."""
+    raw = str(raw_value).strip()
+    if raw.lower() == "unpaid":
+        return False, None
+    try:
+        return True, int(float(raw))
+    except (ValueError, TypeError):
+        print(f"  Could not parse stipend value '{raw_value}', leaving amount blank")
+        return True, None
+
+
 def import_internships():
     print("Importing Internships...")
     df = pd.read_csv("Data/Internship.csv")
@@ -87,6 +99,8 @@ def import_internships():
                 id=int(row["company_id"])
             )
 
+            is_paid, stipend_amount = _parse_stipend(row["stipend_monthly"])
+
             Internship.objects.update_or_create(
                 student=student,
                 company=company,
@@ -96,7 +110,8 @@ def import_internships():
                     "start_date": row["start_date"],
                     "end_date": row["end_date"],
                     "mode": row["mode"],
-                    "stipend_monthly": str(row["stipend_monthly"]),
+                    "is_paid": is_paid,
+                    "stipend_amount": stipend_amount,
                 },
             )
 
